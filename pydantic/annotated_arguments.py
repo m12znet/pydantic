@@ -63,6 +63,7 @@ class WrapValidator:
 
 @slots_dataclass(frozen=True)
 class CheckIsInstance:
+    @classmethod
     def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
         return core_schema.is_instance_schema(source_type)
 
