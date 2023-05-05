@@ -22,7 +22,7 @@ from pydantic import (
     errors,
     validator,
 )
-from pydantic.annotated_arguments import AfterValidator, BeforeValidator, PlainValidator, WrapValidator
+from pydantic.annotated_arguments import AfterValidator, BeforeValidator, CheckIsInstance, PlainValidator, WrapValidator
 from pydantic.decorators import field_validator, root_validator
 
 
@@ -90,6 +90,23 @@ def test_annotated_validator_wrap() -> None:
             'ctx': {'error': '1970-04-17 is not in the sixties!'},
         }
     ]
+
+
+def test_annotated_valdidator_check_is_instance() -> None:
+    class A:
+        pass
+
+    class B:
+        pass
+
+    class Model(BaseModel):
+        x: Annotated[A, CheckIsInstance]
+
+    assert Model(x=A())
+    with pytest.raises(ValidationError) as _:
+        assert Model(x=B())
+
+    # TODO (mmartinez): create a test case for CheckIsInstance
 
 
 def test_annotated_validator_nested() -> None:
