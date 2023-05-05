@@ -62,6 +62,12 @@ class WrapValidator:
 
 
 @slots_dataclass(frozen=True)
+class CheckIsInstance:
+    def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
+        return core_schema.is_instance_schema(source_type)
+
+
+@slots_dataclass(frozen=True)
 class PlainSerializer:
     func: core_schema.SerializerFunction
     json_return_type: core_schema.JsonReturnTypes | None = None
