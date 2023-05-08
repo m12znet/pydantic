@@ -1,5 +1,5 @@
 """
-Logic related to validators applied to models etc. via the `@validator` and `@root_validator` decorators.
+Logic related to validators applied to models etc. via the `@field_validator` and `@root_validator` decorators.
 """
 from __future__ import annotations as _annotations
 
@@ -330,7 +330,7 @@ def inspect_validator(validator: Callable[..., Any], mode: FieldValidatorModes) 
 
     raise PydanticUserError(
         f'Unrecognized field_validator function signature for {validator} with `mode={mode}`:{sig}',
-        code='field-validator-signature',
+        code='validator-signature',
     )
 
 
