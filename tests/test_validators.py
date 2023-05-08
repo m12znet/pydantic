@@ -99,14 +99,25 @@ def test_annotated_valdidator_check_is_instance() -> None:
     class B:
         pass
 
+    class C:
+        pass
+
     class Model(BaseModel):
         x: Annotated[A, CheckIsInstance]
 
-    assert Model(x=A())
-    with pytest.raises(ValidationError) as _:
-        assert Model(x=B())
+    assert Model(x=A()).x.__class__ == A
 
-    # TODO (mmartinez): create a test case for CheckIsInstance
+    with pytest.raises(ValidationError) as _:
+        Model(x=B())
+
+    class ModelAnnotatedWithUnion(BaseModel):
+        x: Annotated[Union[A, B], CheckIsInstance]
+
+    assert ModelAnnotatedWithUnion(x=A()).x.__class__ == A
+    assert ModelAnnotatedWithUnion(x=B()).x.__class__ == B
+
+    with pytest.raises(ValidationError) as _:
+        Model(x=C())
 
 
 def test_annotated_validator_nested() -> None:
