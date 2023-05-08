@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, get_args, get_origin
 
 from pydantic_core import core_schema
 from typing_extensions import Literal
 
 from ._internal._decorators import inspect_annotated_serializer, inspect_validator
 from ._internal._internal_dataclass import slots_dataclass
+from ._internal._typing_extra import origin_is_union
 from .annotated import GetCoreSchemaHandler
 
 
@@ -65,6 +66,8 @@ class WrapValidator:
 class CheckIsInstance:
     @classmethod
     def __get_pydantic_core_schema__(self, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
+        if origin_is_union(get_origin(source_type)):
+            return core_schema.union_schema([core_schema.is_instance_schema(tp) for tp in get_args(source_type)])
         return core_schema.is_instance_schema(source_type)
 
 
